@@ -27,8 +27,10 @@ La incorporación de cuentas y catálogo público supera 24 pruebas automatizada
 con Django 5.2.18 en una base SQLite temporal de pruebas. Esto verifica lógica,
 formularios, sesiones, permisos, plantillas y consultas ORM; no es una validación
 contra MySQL ni de visualización real en móvil. La aplicación normal conserva
-MySQL. Falta repetir el recorrido integrado en el MySQL del equipo, guardar
-capturas y grabar el video. Ver docs/validacion_eje2.md.
+MySQL. Andrés también ejecutó las 24 pruebas en Windows y confirmó el recorrido
+manual de catálogo, registro, inicio y cierre de sesión con su configuración MySQL.
+Cada integrante debe verificar su instalación. Falta reunir las capturas y grabar
+el video. Ver docs/validacion_eje2.md.
 
 ## Preparar un computador
 
@@ -151,7 +153,7 @@ los datos estáticos y la simulación de registro/voto se sustituyen por Django 
 
 ## Pendientes de la entrega
 
-Comprobar la integración en MySQL y en móvil/computador, tomar capturas comentadas,
+Verificar la instalación en los demás equipos y la visualización móvil, tomar capturas comentadas,
 actualizar el informe con fragmentos de código y resultados, y grabar un video de
 al menos cinco minutos con participación de los cuatro. La entrega oficial es un
 PDF por equipo con enlaces accesibles al repositorio y video.
@@ -164,3 +166,92 @@ productivo siguen fuera de esta fase. Una edición por año y nombres de categor
 
 No subir .env, claves privadas, contraseñas, datos personales, venv o bases locales.
 Usar datos de prueba. Cambiar credenciales que hayan quedado expuestas o sean débiles.
+
+
+## Inicio y reinicio en Windows (CMD)
+
+Requisitos: Python, Git y MySQL instalados; servicio MySQL iniciado; base
+`votaciones` y usuario `votaciones_app` preparados como se indica arriba.
+Cada integrante utiliza su propia contraseña local de MySQL.
+Los comandos siguientes son para CMD, no para PowerShell ni para la consola mysql>.
+
+### Primera instalación
+
+Clonar el repositorio si todavía no se tiene:
+
+```bat
+git clone https://github.com/aloaiza35-eng/desarrollo-web-votaciones.git
+cd desarrollo-web-votaciones
+python -m venv .venv
+.venv\Scripts\activate.bat
+python -m pip install -r requirements.txt
+```
+
+Si ya está clonado, entrar a su carpeta, guardar los cambios propios y actualizar
+con `git pull --ff-only origin main`. No volver a clonar ni crear el entorno en
+cada inicio. La ubicación de la carpeta puede ser diferente en cada computador.
+
+### Variables: configurar en cada terminal nueva
+
+Desde la raíz del proyecto y con el entorno virtual activo:
+
+```bat
+set "DJANGO_DEBUG=True"
+set "DJANGO_ALLOWED_HOSTS=localhost,127.0.0.1"
+set "MYSQL_DATABASE=votaciones"
+set "MYSQL_USER=votaciones_app"
+set "MYSQL_HOST=127.0.0.1"
+set "MYSQL_PORT=3306"
+python -c "import os,secrets,getpass,subprocess; os.environ['DJANGO_SECRET_KEY']=secrets.token_urlsafe(50); os.environ['MYSQL_PASSWORD']=getpass.getpass('Password de votaciones_app: '); subprocess.call(['cmd.exe','/D'])"
+```
+
+El último comando solicita la contraseña del usuario MySQL `votaciones_app`,
+no la del administrador de Django ni la de root. Al escribirla no se muestra.
+Se abre una consola CMD hija con las variables; continuar dentro de ella.
+Este método no escribe las credenciales en el repositorio.
+
+La clave Django generada es temporal para desarrollo: al repetir este comando
+cambia y las sesiones anteriores pueden dejar de ser válidas; los datos de MySQL
+se conservan. Para mantener sesiones entre reinicios, configurar una clave estable
+privada mediante el entorno local. `.env.example` es solo una referencia: copiarlo
+a `.env` no carga variables automáticamente.
+
+### Preparar la base y ejecutar
+
+En la consola que tiene las variables:
+
+```bat
+python manage.py check
+python manage.py migrate
+```
+
+Solo en una base de demostración nueva, cargar los cinco registros compartidos:
+
+```bat
+python manage.py loaddata datos_prueba
+```
+
+El fixture usa identificadores fijos y puede sobrescribir registros con esos
+identificadores; no cargarlo en cada inicio ni sobre datos propios sin revisar.
+Crear un administrador propio una sola vez:
+
+```bat
+python manage.py createsuperuser
+python manage.py runserver
+```
+
+Abrir http://127.0.0.1:8000/ y mantener la terminal abierta. Admin está en
+http://127.0.0.1:8000/admin/. Cada integrante crea su administrador; Git no incluye
+usuarios ni la base local. Para los siguientes inicios basta activar el entorno,
+configurar las variables y ejecutar `python manage.py runserver`.
+Después de actualizar el código compartido, ejecutar `python manage.py migrate`.
+
+### Errores frecuentes
+
+- `KeyError: DJANGO_SECRET_KEY` o `MYSQL_PASSWORD`: faltan variables en esa terminal;
+  repetir el bloque de configuración y continuar en la consola hija.
+- `Access denied`: verificar usuario y contraseña de MySQL.
+- Error de conexión/puerto 3306: comprobar que el servicio MySQL esté iniciado.
+- `No migrations to apply`: es normal; la base ya está al día.
+- Las pruebas con `config.test_settings` usan SQLite temporal y no configuran las
+  variables de la terminal ni sustituyen la ejecución de la aplicación con MySQL.
