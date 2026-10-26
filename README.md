@@ -4,25 +4,21 @@ Proyecto académico de la asignatura Desarrollo Web, Entrega 2. La aplicación e
 
 ## Estado
 
-La base del proyecto fue ejecutada y comprobada localmente en Windows
-con Python 3.13.15, Django 5.2.18, mysqlclient 2.3.0 y MySQL 8.4.9.
+Base ejecutada y comprobada localmente en Windows con Python 3.13.15, Django 5.2.18, mysqlclient 2.3.0 y MySQL 8.4.9.
 
 Verificado:
-- Comprobación de Django sin errores.
-- Conexión con MySQL mediante el usuario de la aplicación.
-- Generación y aplicación de las migraciones.
-- Creación del superusuario y acceso a Django Admin.
-- Inserción de datos ficticios mediante el ORM.
-- Consulta de las opciones de prueba desde Django Admin.
+- Comprobacion de Django sin errores.
+- Conexion con MySQL usando el usuario de la aplicacion.
+- Migraciones generadas y aplicadas.
+- Acceso y cierre de sesion en Django Admin.
+- Insercion y consulta de datos ficticios mediante el ORM.
+- Exportacion UTF-8 y carga de cinco registros de prueba.
+- Creacion del participante C desde Django Admin.
+- Edicion de su descripcion; confirmar persistencia reabriendo el registro guardado.
 
-Se incluyen la migración inicial y los datos de prueba de la aplicación.
-No se incluyen usuarios, contraseñas ni la base de datos local.
+La migracion inicial y los cinco datos de prueba estan compartidos. El participante C permanece solo en la base local.
 
-Siguen pendientes la autenticación pública, las interfaces públicas,
-las pruebas adicionales y las evidencias de la entrega.
-
-Django y las dependencias de requirements.txt son necesarios
-para ejecutar el proyecto.
+Pendientes del equipo: autenticacion publica, interfaces publicas, pruebas integradas, capturas, informe y video. El login de Admin no sustituye la autenticacion publica.
 
 ## Qué quedó preparado
 
@@ -35,7 +31,7 @@ para ejecutar el proyecto.
 - `.env.example` con nombres de variables y valores de ejemplo, sin credenciales reales.
 - `.gitignore` para excluir entornos virtuales, secretos, archivos de editor y datos locales.
 
-No hay registro de votos, inicio de sesión propio, interfaces públicas ni datos de prueba.
+No hay registro de votos ni interfaces publicas. Si hay datos ficticios de prueba compartidos.
 
 ## Instalación del entorno
 
@@ -76,7 +72,7 @@ Obligatorias, sin valor predeterminado en el código:
 
 Con valor predeterminado si no se definen:
 
-- `DJANGO_DEBUG` (predeterminado `False`; solo `true` en minúsculas activa el modo depuración)
+- `DJANGO_DEBUG` (predeterminado `False`; acepta True o true al convertir el valor a minusculas)
 - `DJANGO_ALLOWED_HOSTS` (predeterminado `localhost,127.0.0.1`, separadas por comas)
 - `MYSQL_DATABASE` (predeterminado `votaciones`)
 - `MYSQL_USER` (predeterminado `votaciones_app`)
@@ -126,16 +122,7 @@ y las variables de entorno, ejecutar:
 Los datos de prueba son ficticios. Cargarlos en una base local nueva
 o revisar antes posibles conflictos con registros existentes.
 
-Comandos previstos, después de tener el entorno y las variables:
-
-```bash
-python manage.py makemigrations votaciones
-python manage.py migrate
-python manage.py createsuperuser
-python manage.py runserver
-```
-
-Nada de esto se ejecutó al preparar esta base.
+La migracion inicial ya esta incluida. No volver a generarla: ejecutar migrate para aplicarla.
 
 ## Modelos
 
@@ -164,7 +151,7 @@ Está previsto usar el usuario estándar de Django (`django.contrib.auth`). Cual
 
 Antes de añadir otra aplicación Django, o de modificar `config/settings.py` y `config/urls.py`, avisen en el grupo y revisen la rama compartida. Así se evita pisar `INSTALLED_APPS`, middleware o rutas.
 
-Siguen pendientes los datos de prueba, las pruebas funcionales, las capturas, el informe y el video de la entrega.
+Los datos iniciales ya estan compartidos. Faltan pruebas integradas, reunir capturas y completar el informe y el video.
 
 ## Decisiones preliminares del equipo
 
@@ -177,3 +164,13 @@ Estas decisiones son propuestas de trabajo, no reglas aprobadas por un cliente:
 ## Credenciales y datos personales
 
 No incluyas contraseñas, claves secretas, certificados ni datos personales de participantes o del equipo en el repositorio. `.env.example` solo contiene marcadores de ejemplo.
+
+## Documentacion de la parte 1
+
+- [Pruebas y evidencias](docs/pruebas_parte_1.md)
+- [Guion del video](docs/guion_parte_1.md)
+- [Integracion del equipo](docs/integracion_equipo.md)
+
+## Docker
+
+Docker no se exige en la consigna ni se menciona en la transcripcion aportada de la primera clase del Eje 2. MySQL instalado como servicio de Windows ya funciona. Docker seria una alternativa opcional, no un pendiente obligatorio.
