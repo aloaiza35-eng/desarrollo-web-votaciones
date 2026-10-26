@@ -1,0 +1,46 @@
+[
+{
+  "model": "votaciones.edicion",
+  "pk": 1,
+  "fields": {
+    "nombre": "Festival de la Leyenda Vallenata",
+    "anio": 2027
+  }
+},
+{
+  "model": "votaciones.categoria",
+  "pk": 1,
+  "fields": {
+    "edicion": 1,
+    "nombre": "Categoría de prueba",
+    "descripcion": "Datos ficticios para verificar el sistema."
+  }
+},
+{
+  "model": "votaciones.votacion",
+  "pk": 1,
+  "fields": {
+    "categoria": 1,
+    "titulo": "Votación de demostración",
+    "descripcion": "Ejemplo académico sin validez oficial."
+  }
+},
+{
+  "model": "votaciones.opcion",
+  "pk": 1,
+  "fields": {
+    "votacion": 1,
+    "nombre": "Participante de prueba A",
+    "descripcion": ""
+  }
+},
+{
+  "model": "votaciones.opcion",
+  "pk": 2,
+  "fields": {
+    "votacion": 1,
+    "nombre": "Participante de prueba B",
+    "descripcion": ""
+  }
+}
+]

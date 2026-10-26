@@ -4,9 +4,25 @@ Proyecto académico de la asignatura Desarrollo Web, Entrega 2. La aplicación e
 
 ## Estado
 
-Esta entrega deja la **base de código preparada**. Todavía no es una aplicación funcional: falta instalar Django y sus dependencias, crear la base de datos MySQL, configurar el entorno, generar y aplicar migraciones, y ejecutar el servidor. No se ha comprobado la conexión con MySQL, el funcionamiento de los modelos ni Django Admin.
+La base del proyecto fue ejecutada y comprobada localmente en Windows
+con Python 3.13.15, Django 5.2.18, mysqlclient 2.3.0 y MySQL 8.4.9.
 
-Django y las dependencias de `requirements.txt` son necesarios para ejecutar el proyecto.
+Verificado:
+- Comprobación de Django sin errores.
+- Conexión con MySQL mediante el usuario de la aplicación.
+- Generación y aplicación de las migraciones.
+- Creación del superusuario y acceso a Django Admin.
+- Inserción de datos ficticios mediante el ORM.
+- Consulta de las opciones de prueba desde Django Admin.
+
+Se incluyen la migración inicial y los datos de prueba de la aplicación.
+No se incluyen usuarios, contraseñas ni la base de datos local.
+
+Siguen pendientes la autenticación pública, las interfaces públicas,
+las pruebas adicionales y las evidencias de la entrega.
+
+Django y las dependencias de requirements.txt son necesarios
+para ejecutar el proyecto.
 
 ## Qué quedó preparado
 
@@ -99,12 +115,16 @@ $env:MYSQL_PORT = "3306"
 
 ## Pasos pendientes para ejecutar
 
-1. Instalar MySQL en el equipo local. Este repositorio no crea la base de datos ni el usuario.
-2. Crear la base `votaciones` y un usuario de aplicación (el ejemplo usa `votaciones_app`) con permiso solo sobre esa base. Definir la contraseña fuera del código.
-3. Configurar las variables de entorno de la sección anterior en el proceso que va a lanzar Django.
-4. Generar y aplicar migraciones. **Una sola persona** debe crear la migración inicial y subirla al repositorio. El resto del equipo debe aplicar las migraciones compartidas, sin generar otra migración inicial en paralelo.
-5. Crear un superusuario de Django para entrar a `/admin/`.
-6. Ejecutar el servidor de desarrollo y comprobar el acceso a `/admin/`.
+La migración inicial ya está incluida. Después de preparar MySQL
+y las variables de entorno, ejecutar:
+
+    python manage.py migrate
+    python manage.py loaddata datos_prueba
+    python manage.py createsuperuser
+    python manage.py runserver
+
+Los datos de prueba son ficticios. Cargarlos en una base local nueva
+o revisar antes posibles conflictos con registros existentes.
 
 Comandos previstos, después de tener el entorno y las variables:
 
