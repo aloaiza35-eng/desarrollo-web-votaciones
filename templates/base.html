@@ -1,0 +1,34 @@
+{% load static %}
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Consulta las ediciones, categorías y opciones del sistema académico de votaciones del Festival de la Leyenda Vallenata.">
+  <title>{% block title %}Festival Vallenato · Votaciones{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'css/festival.css' %}">
+</head>
+<body>
+<a class="skip" href="#contenido">Saltar al contenido</a>
+<div class="academic">Proyecto académico · Datos de demostración · No registra votos reales</div>
+<header class="topbar">
+  <div class="wrap nav">
+    <a class="brand" href="{% url 'votaciones:inicio' %}"><span class="brand-icon" aria-hidden="true">♫</span><span>FESTIVAL<small>DE LA LEYENDA VALLENATA</small></span></a>
+    <nav aria-label="Navegación principal">
+      <a href="{% url 'votaciones:inicio' %}">Inicio</a>
+      <a href="{% url 'votaciones:ediciones' %}">Ediciones</a>
+      {% if user.is_authenticated %}
+        <a href="{% url 'cuenta' %}">Mi cuenta</a>
+        {% if user.is_staff %}<a href="{% url 'admin:index' %}">Administrar</a>{% endif %}
+        <form method="post" action="{% url 'logout' %}" class="inline">{% csrf_token %}<button class="button outline-light small" type="submit">Cerrar sesión</button></form>
+      {% else %}
+        <a href="{% url 'login' %}">Ingresar</a><a class="button gold small" href="{% url 'registro' %}">Crear cuenta</a>
+      {% endif %}
+    </nav>
+  </div>
+</header>
+<main id="contenido" class="wrap main">
+  {% if messages %}<div aria-live="polite">{% for message in messages %}<p class="message {{ message.tags }}" role="status">{{ message }}</p>{% endfor %}</div>{% endif %}
+  {% block content %}{% endblock %}
+</main>
+<footer><div class="wrap footer-inner"><div><strong>Festival de la Leyenda Vallenata</strong><p>Una plataforma para distintas ediciones y categorías.</p></div><p>Entrega 2 · Desarrollo Web<br>Proyecto académico sin votaciones oficiales.</p></div></footer>
+</body></html>

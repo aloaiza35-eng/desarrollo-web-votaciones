@@ -1,0 +1,1 @@
+<article class="card"><span class="year">{{ edicion.anio }}</span><h3>{{ edicion.nombre }}</h3><p class="muted">{{ edicion.total_categorias }} categoría{{ edicion.total_categorias|pluralize:"s" }} registrada{{ edicion.total_categorias|pluralize:"s" }}</p><a class="button navy" href="{% url 'votaciones:categorias' edicion.pk %}">Ver categorías →</a></article>

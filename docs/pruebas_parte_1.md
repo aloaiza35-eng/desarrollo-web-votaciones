@@ -1,3 +1,5 @@
+> Nota de actualización: los puntos 2 y 3 ya tienen implementación; su estado actual y la validación pendiente con MySQL se describen en README.md y docs/validacion_eje2.md. Los resultados de la parte 1 que siguen son históricos.
+
 # Pruebas y evidencias de la parte 1
 
 Resultados basados en las salidas de terminal y capturas compartidas por Andres. No representan pruebas en todos los computadores.

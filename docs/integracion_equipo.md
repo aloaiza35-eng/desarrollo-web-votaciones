@@ -1,3 +1,5 @@
+> Nota de actualización: los puntos 2 y 3 ya tienen implementación; su estado actual y la validación pendiente con MySQL se describen en README.md y docs/validacion_eje2.md. Los resultados de la parte 1 que siguen son históricos.
+
 # Integracion del equipo
 
 ## Preparar cada computador

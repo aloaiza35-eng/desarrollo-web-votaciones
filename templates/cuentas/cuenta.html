@@ -1,0 +1,3 @@
+{% extends "base.html" %}
+{% block title %}Mi cuenta · Festival{% endblock %}
+{% block content %}<section class="account card"><p class="eyebrow">SESIÓN INICIADA</p><h1>Hola, {{ user.username }}</h1><p>Tu acceso está activo. Puedes recorrer las ediciones y conocer sus categorías y opciones.</p><a class="button navy" href="{% url 'votaciones:ediciones' %}">Explorar ediciones →</a><p class="muted">Esta primera versión no registra votos.</p><form method="post" action="{% url 'logout' %}">{% csrf_token %}<button class="button outline" type="submit">Cerrar sesión</button></form></section>{% endblock %}

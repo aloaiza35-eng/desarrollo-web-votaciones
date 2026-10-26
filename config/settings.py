@@ -23,6 +23,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "votaciones.apps.VotacionesConfig",
+    "cuentas.apps.CuentasConfig",
 ]
 
 MIDDLEWARE = [
@@ -107,3 +108,7 @@ STATICFILES_DIRS = [BASE_DIR / "static"]
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+LOGIN_URL = "login"
+LOGIN_REDIRECT_URL = "cuenta"
+LOGOUT_REDIRECT_URL = "votaciones:inicio"

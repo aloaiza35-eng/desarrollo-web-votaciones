@@ -1,41 +1,46 @@
-# Sistema Web de Votaciones — Festival de la Leyenda Vallenata 2027
+# Sistema Web de Votaciones del Festival de la Leyenda Vallenata
 
-Proyecto académico de la asignatura Desarrollo Web, Entrega 2. La aplicación está pensada para organizar las ediciones, categorías, votaciones y opciones del Festival de la Leyenda Vallenata 2027.
+Entrega 2 de Desarrollo Web. Aplicación Django MVT con MySQL.
 
-## Estado
+## Funcionalidades
 
-Base ejecutada y comprobada localmente en Windows con Python 3.13.15, Django 5.2.18, mysqlclient 2.3.0 y MySQL 8.4.9.
+- Ediciones, categorías, votaciones y opciones relacionadas y administrables desde Django Admin.
+- Inicio público con totales del catálogo obtenidos de la base de datos.
+- Recorrido edición → categoría → votación → detalle y opciones, con enlaces y mensajes de catálogo vacío.
+- Registro mediante UserCreationForm y el usuario estándar de Django.
+- Inicio de sesión mediante LoginView y AuthenticationForm.
+- Mi cuenta protegida por sesión y cierre de sesión por POST con CSRF.
+- Diseño responsive sin dependencias de estilos o scripts externos.
+- Los usuarios registrados públicamente no reciben permisos de administración.
 
-Verificado:
-- Comprobacion de Django sin errores.
-- Conexion con MySQL usando el usuario de la aplicacion.
-- Migraciones generadas y aplicadas.
-- Acceso y cierre de sesion en Django Admin.
-- Insercion y consulta de datos ficticios mediante el ORM.
-- Exportacion UTF-8 y carga de cinco registros de prueba.
-- Creacion del participante C desde Django Admin.
-- Edicion de su descripcion; confirmar persistencia reabriendo el registro guardado.
+La inscripción académica usa nombre de usuario y contraseña, sin solicitar documentos
+ni otros datos personales no confirmados. Esta decisión preliminar no define la
+identificación ni elegibilidad del votante definitivo. No registra votos ni calcula resultados.
+Django Admin continúa siendo el administrador permitido en este eje.
 
-La migracion inicial y los cinco datos de prueba estan compartidos. El participante C permanece solo en la base local.
+## Estado de validación
 
-Pendientes del equipo: autenticacion publica, interfaces publicas, pruebas integradas, capturas, informe y video. El login de Admin no sustituye la autenticacion publica.
+La base inicial se comprobó localmente por Andrés con Python 3.13.15, Django 5.2.18,
+mysqlclient 2.3.0 y MySQL 8.4.9: migraciones, acceso a Admin y datos de prueba.
 
-## Qué quedó preparado
+La incorporación de cuentas y catálogo público supera 24 pruebas automatizadas
+con Django 5.2.18 en una base SQLite temporal de pruebas. Esto verifica lógica,
+formularios, sesiones, permisos, plantillas y consultas ORM; no es una validación
+contra MySQL ni de visualización real en móvil. La aplicación normal conserva
+MySQL. Falta repetir el recorrido integrado en el MySQL del equipo, guardar
+capturas y grabar el video. Ver docs/validacion_eje2.md.
 
-- Proyecto Django con el paquete de configuración `config` y la aplicación `votaciones`.
-- Modelos `Edicion`, `Categoria`, `Votacion` y `Opcion`.
-- Registro de esos modelos en Django Admin.
-- Única ruta configurada: `/admin/`.
-- Carpetas `templates/`, `static/css/` y `docs/` (conservadas en Git con `.gitkeep`).
-- `requirements.txt` con rangos iniciales de Django y `mysqlclient`.
-- `.env.example` con nombres de variables y valores de ejemplo, sin credenciales reales.
-- `.gitignore` para excluir entornos virtuales, secretos, archivos de editor y datos locales.
+## Preparar un computador
 
-No hay registro de votos ni interfaces publicas. Si hay datos ficticios de prueba compartidos.
+Trabajar en la raíz que contiene manage.py. Crear un entorno propio; no copiar venv.
 
-## Instalación del entorno
+Windows CMD:
 
-Crear y activar un entorno virtual antes de instalar dependencias.
+```bat
+python -m venv .venv
+.venv\Scripts\activate.bat
+python -m pip install -r requirements.txt
+```
 
 macOS o Linux:
 
@@ -45,122 +50,117 @@ source .venv/bin/activate
 python -m pip install -r requirements.txt
 ```
 
-Windows (PowerShell):
+Si mysqlclient necesita compilarse, instalar las bibliotecas y herramientas de su
+plataforma. En la prueba Windows se instaló una rueda compatible sin compilación.
 
-```powershell
-py -m venv .venv
-.\.venv\Scripts\Activate.ps1
-python -m pip install -r requirements.txt
+## MySQL y variables de entorno
+
+Crear una base propia llamada votaciones (utf8mb4) y un usuario votaciones_app con
+permisos sobre esa base. Utilizar contraseñas locales propias. La aplicación recibe:
+
+| Variable | Valor predeterminado |
+| --- | --- |
+| DJANGO_SECRET_KEY | Obligatoria; clave secreta aleatoria del entorno |
+| MYSQL_PASSWORD | Obligatoria; contraseña del usuario de la aplicación |
+| DJANGO_DEBUG | False; True solo en desarrollo |
+| DJANGO_ALLOWED_HOSTS | localhost,127.0.0.1 |
+| MYSQL_DATABASE | votaciones |
+| MYSQL_USER | votaciones_app |
+| MYSQL_HOST | 127.0.0.1 |
+| MYSQL_PORT | 3306 |
+
+.env.example documenta los nombres, no contiene credenciales reales y no se carga
+automáticamente. Copiarlo a .env no configura por sí solo el proceso.
+
+Windows CMD (reemplazar valores privados localmente y no compartir el historial):
+
+```bat
+set "DJANGO_SECRET_KEY=CLAVE_ALEATORIA_LOCAL"
+set "MYSQL_PASSWORD=PASSWORD_LOCAL"
+set "DJANGO_DEBUG=True"
 ```
 
-`mysqlclient` suele necesitar bibliotecas del sistema además del paquete de Python. En el equipo donde se vaya a ejecutar el proyecto puede hacer falta, según el sistema:
+PowerShell: usar `$env:NOMBRE = "valor"`. macOS/Linux: `export NOMBRE="valor"`.
+Conservar una clave secreta estable en el entorno local para mantener sesiones
+entre reinicios. No guardarla en archivos compartidos ni commits.
 
-- Windows: un cliente de desarrollo de MySQL (por ejemplo MySQL Connector/C o la instalación de MySQL que incluya las bibliotecas de cliente) para que el compilador o la rueda encuentre los encabezados y las DLL.
-- macOS: `mysql-client` o MySQL, a menudo mediante Homebrew, y las variables de compilación que indique el instalador si `pip` no encuentra una rueda compatible.
-- Linux: los paquetes de desarrollo del cliente MySQL y de Python (por ejemplo `default-libmysqlclient-dev`, `pkg-config` y los encabezados de Python) antes de instalar `mysqlclient`.
-
-Esas dependencias del sistema no forman parte de este repositorio y hay que resolverlas en cada computador.
-
-Los rangos de `requirements.txt` son un punto de partida. Cuando el equipo ejecute la instalación, conviene fijar y documentar las versiones exactas que sí funcionen.
-
-## Variables de entorno
-
-Obligatorias, sin valor predeterminado en el código:
-
-- `DJANGO_SECRET_KEY`
-- `MYSQL_PASSWORD`
-
-Con valor predeterminado si no se definen:
-
-- `DJANGO_DEBUG` (predeterminado `False`; acepta True o true al convertir el valor a minusculas)
-- `DJANGO_ALLOWED_HOSTS` (predeterminado `localhost,127.0.0.1`, separadas por comas)
-- `MYSQL_DATABASE` (predeterminado `votaciones`)
-- `MYSQL_USER` (predeterminado `votaciones_app`)
-- `MYSQL_HOST` (predeterminado `127.0.0.1`)
-- `MYSQL_PORT` (predeterminado `3306`)
-
-`.env.example` no se carga automáticamente. Copiarlo a `.env` no basta: hay que exportar esas variables en la terminal, en el entorno del proceso o con el mecanismo que el equipo acuerde. No subas `.env`, contraseñas ni datos personales. El archivo `.env` ya está ignorado por Git.
-
-Ejemplo de exportación en la sesión actual (sustituye los valores de ejemplo):
-
-macOS o Linux:
+## Ejecutar con MySQL
 
 ```bash
-export DJANGO_SECRET_KEY="reemplazar-por-una-clave-local-aleatoria"
-export DJANGO_DEBUG="True"
-export DJANGO_ALLOWED_HOSTS="localhost,127.0.0.1"
-export MYSQL_DATABASE="votaciones"
-export MYSQL_USER="votaciones_app"
-export MYSQL_PASSWORD="reemplazar-por-la-contrasena-local"
-export MYSQL_HOST="127.0.0.1"
-export MYSQL_PORT="3306"
+python manage.py check
+python manage.py migrate
+python manage.py runserver
 ```
 
-Windows (PowerShell):
+No hay nuevos modelos ni migraciones para cuentas: usa el usuario estándar y las
+migraciones de auth ya compartidas. No regenerar 0001_initial.py.
 
-```powershell
-$env:DJANGO_SECRET_KEY = "reemplazar-por-una-clave-local-aleatoria"
-$env:DJANGO_DEBUG = "True"
-$env:DJANGO_ALLOWED_HOSTS = "localhost,127.0.0.1"
-$env:MYSQL_DATABASE = "votaciones"
-$env:MYSQL_USER = "votaciones_app"
-$env:MYSQL_PASSWORD = "reemplazar-por-la-contrasena-local"
-$env:MYSQL_HOST = "127.0.0.1"
-$env:MYSQL_PORT = "3306"
+Abrir http://127.0.0.1:8000/ para las páginas públicas.
+Registro: /cuentas/registro/. Login: /cuentas/ingresar/.
+Mi cuenta: /cuentas/mi-cuenta/. Logout: botón de formulario POST.
+Admin: /admin/ (requiere usuario staff/superusuario).
+
+Opcional en una base de demostración nueva:
+
+```bash
+python manage.py loaddata datos_prueba
+python manage.py createsuperuser
 ```
 
-## Pasos pendientes para ejecutar
+El fixture tiene cinco registros ficticios: una edición, una categoría, una votación
+y dos opciones. Sus claves primarias pueden colisionar con datos existentes: no
+cargarlo sobre datos importantes sin revisión. No contiene usuarios ni contraseñas.
+El participante C creado localmente en Admin no forma parte del fixture compartido.
 
-La migración inicial ya está incluida. Después de preparar MySQL
-y las variables de entorno, ejecutar:
+## Pruebas automatizadas
 
-    python manage.py migrate
-    python manage.py loaddata datos_prueba
-    python manage.py createsuperuser
-    python manage.py runserver
+Pruebas aisladas sin tocar MySQL ni requerir sus credenciales:
 
-Los datos de prueba son ficticios. Cargarlos en una base local nueva
-o revisar antes posibles conflictos con registros existentes.
+```bash
+python manage.py test cuentas votaciones --settings=config.test_settings
+```
 
-La migracion inicial ya esta incluida. No volver a generarla: ejecutar migrate para aplicarla.
+config.test_settings usa SQLite en memoria y un hasher rápido solo para pruebas.
+No usar esa configuración para servir la aplicación o presentar la conexión MySQL.
 
-## Modelos
+Para probar la misma suite con MySQL, desde un entorno de pruebas y con las
+variables configuradas:
 
-Definidos en `votaciones.models`:
+```bash
+python manage.py test cuentas votaciones
+```
 
-- `Edicion`
-- `Categoria`
-- `Votacion`
-- `Opcion`
+Django crea y elimina una base test_votaciones. Usar una cuenta autorizada para
+crear/eliminar esa base de pruebas. No ampliar permisos globales del usuario de
+la aplicación sin necesidad. El usuario local restringido solo a votaciones puede
+no tener permisos suficientes para ejecutar esa suite.
 
-Relaciones preparadas:
+## Organización
 
-- `edicion.categorias.all()`
-- `categoria.votaciones.all()`
-- `votacion.opciones.all()`
+- config/: configuración y rutas generales.
+- cuentas/: formularios, vistas, rutas y pruebas de autenticación.
+- votaciones/: modelos, administración, vistas, rutas y pruebas del catálogo.
+- templates/: base, cuentas, catálogo y página 404.
+- static/css/festival.css: estilos del sitio público.
+- docs/validacion_eje2.md: evidencias y validación pendiente con MySQL.
 
-No existe un modelo `Voto`. El registro definitivo de votos queda fuera de esta fase.
+Coordinar cambios en settings.py, urls.py y modelos antes de integrar otras ramas.
+No reemplazar el modelo de usuario estándar después de las migraciones iniciales.
+El estilo adapta la paleta azul/dorado y las tarjetas del prototipo suministrado;
+los datos estáticos y la simulación de registro/voto se sustituyen por Django real.
 
-## Autenticación e interfaces
+## Pendientes de la entrega
 
-La autenticación propia (registro, inicio y cierre de sesión) y las interfaces públicas todavía no están hechas. La única ruta configurada es `/admin/`. La página pública de la raíz aún no existe.
+Comprobar la integración en MySQL y en móvil/computador, tomar capturas comentadas,
+actualizar el informe con fragmentos de código y resultados, y grabar un video de
+al menos cinco minutos con participación de los cuatro. La entrega oficial es un
+PDF por equipo con enlaces accesibles al repositorio y video.
 
-Está previsto usar el usuario estándar de Django (`django.contrib.auth`). Cualquier usuario personalizado debe acordarse **antes** de las primeras migraciones, porque cambiar el modelo de usuario después complica el historial de la base de datos.
+Las reglas de voto, identidad definitiva, publicación de resultados y despliegue
+productivo siguen fuera de esta fase. Una edición por año y nombres de categoría
+únicos por edición son propuestas de modelado del equipo, no reglas oficiales.
 
-## Coordinación del equipo
+## Credenciales
 
-Antes de añadir otra aplicación Django, o de modificar `config/settings.py` y `config/urls.py`, avisen en el grupo y revisen la rama compartida. Así se evita pisar `INSTALLED_APPS`, middleware o rutas.
-
-Los datos iniciales ya estan compartidos. Faltan pruebas integradas, reunir capturas y completar el informe y el video.
-
-## Decisiones preliminares del equipo
-
-Estas decisiones son propuestas de trabajo, no reglas aprobadas por un cliente:
-
-- Una edición por año (`Edicion.anio` es único).
-- El nombre de una categoría es único dentro de una misma edición.
-- La eliminación está protegida (`on_delete=models.PROTECT`) cuando un registro tiene elementos asociados.
-
-## Credenciales y datos personales
-
-No incluyas contraseñas, claves secretas, certificados ni datos personales de participantes o del equipo en el repositorio. `.env.example` solo contiene marcadores de ejemplo.
+No subir .env, claves privadas, contraseñas, datos personales, venv o bases locales.
+Usar datos de prueba. Cambiar credenciales que hayan quedado expuestas o sean débiles.
