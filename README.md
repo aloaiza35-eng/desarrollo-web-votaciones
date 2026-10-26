@@ -164,13 +164,3 @@ Estas decisiones son propuestas de trabajo, no reglas aprobadas por un cliente:
 ## Credenciales y datos personales
 
 No incluyas contraseñas, claves secretas, certificados ni datos personales de participantes o del equipo en el repositorio. `.env.example` solo contiene marcadores de ejemplo.
-
-## Documentacion de la parte 1
-
-- [Pruebas y evidencias](docs/pruebas_parte_1.md)
-- [Guion del video](docs/guion_parte_1.md)
-- [Integracion del equipo](docs/integracion_equipo.md)
-
-## Docker
-
-Docker no se exige en la consigna ni se menciona en la transcripcion aportada de la primera clase del Eje 2. MySQL instalado como servicio de Windows ya funciona. Docker seria una alternativa opcional, no un pendiente obligatorio.
