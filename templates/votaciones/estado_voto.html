@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block title %}Participación · Festival{% endblock %}
+{% block content %}
+<section class="card account"><p class="eyebrow">{{ categoria.edicion }}</p><h1>{{ categoria.nombre }}</h1>
+  <p class="form-summary" role="alert">{{ error }}</p>
+  <div class="actions"><a class="button navy" href="{% url 'votaciones:participacion' %}">Ver mi participación</a><a href="{% url 'votaciones:categorias' categoria.edicion_id %}">Explorar otras categorías</a></div>
+</section>
+{% endblock %}

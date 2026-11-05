@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Confirmar voto · Festival{% endblock %}
+{% block content %}
+<section class="card account">
+  <p class="eyebrow">PASO 2 DE 2 · CONFIRMACIÓN</p><h1>Revisa tu elección</h1>
+  <dl class="vote-summary">
+    <dt>Edición</dt><dd>{{ categoria.edicion }}</dd>
+    <dt>Categoría</dt><dd>{{ categoria.nombre }}</dd>
+    <dt>Subevento</dt><dd>{{ opcion.votacion.titulo }}</dd>
+    <dt>Tu opción</dt><dd><strong>{{ opcion.nombre }}</strong></dd>
+  </dl>
+  <p>Al confirmar, tu voto quedará registrado. Después no podrás cambiarlo ni votar otra vez en esta categoría y edición.</p>
+  <form method="post" action="{% url 'votaciones:votar' categoria.pk %}">
+    {% csrf_token %}<input type="hidden" name="opcion" value="{{ opcion.pk }}"><input type="hidden" name="confirmar" value="1">
+    <div class="actions"><button class="button navy" type="submit">Confirmar y registrar voto</button><a href="{% url 'votaciones:votar' categoria.pk %}?opcion={{ opcion.pk }}">Cambiar selección</a></div>
+  </form>
+</section>
+{% endblock %}

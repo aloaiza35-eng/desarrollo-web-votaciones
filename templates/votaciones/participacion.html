@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Mi participación · Festival{% endblock %}
+{% block content %}
+<header class="page-heading"><p class="eyebrow">TU HISTORIAL</p><h1>Mi participación</h1><p class="muted">Estas son las categorías en las que registraste tu elección. Puedes seguir participando en otras categorías habilitadas.</p></header>
+<div class="grid">
+{% for voto in votos %}
+  <article class="card"><span class="tag">Voto registrado · {{ voto.categoria.edicion.anio }}</span><h2>{{ voto.categoria.nombre }}</h2>
+    <p><strong>{{ voto.opcion.nombre }}</strong><br><span class="muted">{{ voto.opcion.votacion.titulo }}</span></p>
+    <p class="muted">{{ voto.categoria.edicion.nombre }}<br>{{ voto.fecha|date:"d/m/Y H:i" }}</p>
+    <a class="text-link" href="{% url 'votaciones:votaciones' voto.categoria_id %}">Consultar categoría →</a>
+  </article>
+{% empty %}<div class="empty"><h2>Aún no has registrado votos</h2><p>Explora las ediciones y elige una categoría habilitada para comenzar.</p><a class="button navy" href="{% url 'votaciones:ediciones' %}">Explorar ediciones</a></div>{% endfor %}
+</div>
+{% endblock %}

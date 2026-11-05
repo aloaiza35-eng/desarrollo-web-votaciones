@@ -1,0 +1,103 @@
+{
+  "categorias": [
+    {
+      "id": 1,
+      "nombre": "Demo - Acordeón",
+      "descripcion": "Datos ficticios para comprobar el Eje 3.",
+      "habilitada": true,
+      "edicion": {
+        "id": 1,
+        "nombre": "Festival de la Leyenda Vallenata",
+        "anio": 2027
+      },
+      "opciones": [
+        {
+          "id": 1,
+          "nombre": "Demo - Participante A",
+          "descripcion": "",
+          "votacion": {
+            "id": 1,
+            "titulo": "Demo - Primera ronda",
+            "habilitada": true
+          }
+        },
+        {
+          "id": 2,
+          "nombre": "Demo - Participante B",
+          "descripcion": "",
+          "votacion": {
+            "id": 1,
+            "titulo": "Demo - Primera ronda",
+            "habilitada": true
+          }
+        },
+        {
+          "id": 3,
+          "nombre": "Demo - Participante C",
+          "descripcion": "",
+          "votacion": {
+            "id": 2,
+            "titulo": "Demo - Segunda ronda",
+            "habilitada": true
+          }
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "nombre": "Demo - Canción",
+      "descripcion": "Datos ficticios para comprobar el Eje 3.",
+      "habilitada": true,
+      "edicion": {
+        "id": 1,
+        "nombre": "Festival de la Leyenda Vallenata",
+        "anio": 2027
+      },
+      "opciones": [
+        {
+          "id": 4,
+          "nombre": "Demo - Canción A",
+          "descripcion": "",
+          "votacion": {
+            "id": 3,
+            "titulo": "Demo - Canciones",
+            "habilitada": true
+          }
+        },
+        {
+          "id": 5,
+          "nombre": "Demo - Canción B",
+          "descripcion": "",
+          "votacion": {
+            "id": 3,
+            "titulo": "Demo - Canciones",
+            "habilitada": true
+          }
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "nombre": "Demo - Cerrada",
+      "descripcion": "Datos ficticios para comprobar el Eje 3.",
+      "habilitada": false,
+      "edicion": {
+        "id": 1,
+        "nombre": "Festival de la Leyenda Vallenata",
+        "anio": 2027
+      },
+      "opciones": [
+        {
+          "id": 6,
+          "nombre": "Demo - Opción cerrada",
+          "descripcion": "",
+          "votacion": {
+            "id": 4,
+            "titulo": "Demo - Subevento cerrado por categoría",
+            "habilitada": true
+          }
+        }
+      ]
+    }
+  ]
+}

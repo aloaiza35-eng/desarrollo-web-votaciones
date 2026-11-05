@@ -1,3 +1,5 @@
+from django.conf import settings
+from django.core.exceptions import ValidationError
 from django.db import models
 
 # Propuestas preliminares del equipo, no reglas aprobadas del cliente:
@@ -27,6 +29,14 @@ class Categoria(models.Model):
     )
     nombre = models.CharField(max_length=150)
     descripcion = models.TextField(blank=True)
+    habilitada = models.BooleanField(default=False)
+
+    def clean(self):
+        super().clean()
+        if self.pk and self.votos.exists():
+            anterior = type(self).objects.get(pk=self.pk)
+            if self.edicion_id != anterior.edicion_id:
+                raise ValidationError({"edicion": "Una categoría con votos no puede cambiar de edición."})
 
     class Meta:
         verbose_name = "categoría"
@@ -51,6 +61,14 @@ class Votacion(models.Model):
     )
     titulo = models.CharField(max_length=200)
     descripcion = models.TextField(blank=True)
+    habilitada = models.BooleanField(default=True)
+
+    def clean(self):
+        super().clean()
+        if self.pk and Voto.objects.filter(opcion__votacion_id=self.pk).exists():
+            anterior = type(self).objects.get(pk=self.pk)
+            if self.categoria_id != anterior.categoria_id:
+                raise ValidationError({"categoria": "Un subevento con votos no puede cambiar de categoría."})
 
     class Meta:
         verbose_name = "votación"
@@ -70,6 +88,13 @@ class Opcion(models.Model):
     nombre = models.CharField(max_length=200)
     descripcion = models.TextField(blank=True)
 
+    def clean(self):
+        super().clean()
+        if self.pk and self.votos.exists():
+            anterior = type(self).objects.get(pk=self.pk)
+            if self.votacion_id != anterior.votacion_id:
+                raise ValidationError({"votacion": "Una opción con votos no puede cambiar de subevento."})
+
     class Meta:
         verbose_name = "opción"
         verbose_name_plural = "opciones"
@@ -77,3 +102,57 @@ class Opcion(models.Model):
 
     def __str__(self):
         return self.nombre
+
+
+class Voto(models.Model):
+    """La edición se obtiene de categoria.edicion, sin duplicar esa relación.
+
+    Cada categoría pertenece a una sola edición. UNIQUE(usuario, categoria)
+    garantiza un voto por categoría y edición, incluso entre subeventos.
+    """
+
+    usuario = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.PROTECT, related_name="votos",
+    )
+    categoria = models.ForeignKey(
+        Categoria, on_delete=models.PROTECT, related_name="votos",
+    )
+    opcion = models.ForeignKey(
+        Opcion, on_delete=models.PROTECT, related_name="votos",
+    )
+    fecha = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ["-fecha", "-pk"]
+        verbose_name = "voto"
+        verbose_name_plural = "votos"
+        constraints = [
+            models.UniqueConstraint(
+                fields=["usuario", "categoria"], name="voto_unico_usuario_categoria",
+            ),
+        ]
+
+    @property
+    def edicion(self):
+        return self.categoria.edicion
+
+    def clean(self):
+        super().clean()
+        if self.pk and not self._state.adding:
+            raise ValidationError("Los votos registrados no se pueden modificar.")
+        if self.categoria_id and self.opcion_id:
+            if self.opcion.votacion.categoria_id != self.categoria_id:
+                raise ValidationError({"opcion": "La opción no pertenece a esta categoría y edición."})
+            if not self.categoria.habilitada:
+                raise ValidationError({"categoria": "Esta categoría está cerrada."})
+            if not self.opcion.votacion.habilitada:
+                raise ValidationError({"opcion": "Este subevento está cerrado."})
+
+    def save(self, *args, **kwargs):
+        # La unicidad se impone en la BD, también si dos solicitudes compiten.
+        # full_clean() aporta validación de pertenencia a las escrituras ORM normales.
+        self.full_clean(validate_unique=False, validate_constraints=False)
+        return super().save(*args, **kwargs)
+
+    def __str__(self):
+        return f"{self.usuario} · {self.categoria} · {self.opcion}"

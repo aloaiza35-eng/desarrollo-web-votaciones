@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block title %}Votar en {{ categoria.nombre }} · Festival{% endblock %}
+{% block content %}
+<nav class="breadcrumbs" aria-label="Ubicación"><a href="{% url 'votaciones:categorias' categoria.edicion_id %}">Edición {{ categoria.edicion.anio }}</a><span>/</span><a href="{% url 'votaciones:votaciones' categoria.pk %}">{{ categoria.nombre }}</a></nav>
+<header class="page-heading"><p class="eyebrow">PASO 1 DE 2 · SELECCIÓN</p><h1>{{ categoria.nombre }}</h1><p class="muted">{{ categoria.edicion }}. Puedes elegir una sola opción entre todos los subeventos de esta categoría.</p></header>
+{% if form.fields.opcion.queryset %}
+<form method="post" class="card vote-form">
+  {% csrf_token %}
+  {% if form.errors %}<div class="form-summary" role="alert">{{ form.non_field_errors }}{{ form.opcion.errors }}</div>{% endif %}
+  <fieldset><legend>{{ form.opcion.label }}</legend>
+    {% for radio in form.opcion %}<label class="vote-choice" for="{{ radio.id_for_label }}">{{ radio.tag }}<span>{{ radio.choice_label }}</span></label>{% endfor %}
+  </fieldset>
+  <div class="actions"><button class="button navy" type="submit">Revisar mi elección →</button><a href="{% url 'votaciones:votaciones' categoria.pk %}">Volver a la categoría</a></div>
+</form>
+{% else %}
+  {% if form.errors %}<div class="form-summary" role="alert">{{ form.non_field_errors }}{{ form.opcion.errors }}</div>{% endif %}
+  <div class="empty"><h2>No hay opciones habilitadas</h2><p>La administración debe registrar opciones y habilitar sus subeventos antes de que puedas participar.</p></div>
+{% endif %}
+{% endblock %}
