@@ -2,13 +2,14 @@ from django.db.models import Prefetch
 from django.http import JsonResponse
 from django.views.decorators.http import require_GET
 
-from .models import Categoria, Votacion
+from .models import Categoria, Votacion, Opcion
 
 
 @require_GET
 def categorias(request):
-    consulta = Categoria.objects.select_related("edicion").prefetch_related(
-        Prefetch("votaciones", queryset=Votacion.objects.prefetch_related("opciones")),
+    consulta = Categoria.objects.filter(activo=True, edicion__activo=True).select_related("edicion").prefetch_related(
+        Prefetch("votaciones", queryset=Votacion.objects.filter(activo=True).prefetch_related(
+            Prefetch("opciones", queryset=Opcion.objects.filter(activo=True)))),
     ).order_by("-edicion__anio", "nombre", "pk")
     edicion = request.GET.get("edicion")
     if edicion is not None:

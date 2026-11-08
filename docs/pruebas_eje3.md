@@ -2,7 +2,9 @@
 
 ## Alcance y entorno
 
-Comprobaciones del entorno de implementación, realizadas el 5 de noviembre de 2026.
+Comprobaciones de la versión 05d88dd del Eje 3, realizadas el 5 de noviembre de 2026.
+Las capturas de esta carpeta corresponden a esa versión anterior a la gestión propia;
+no muestran ni comprueban la nueva versión. Para sus resultados ver `pruebas_gestion.md`.
 No representan ejecución en el Windows de Andrés ni sustituyen el video del equipo.
 
 - Linux, Python 3.12, Django 5.2.18, mysqlclient 2.3.0 y MySQL 8.0.46.

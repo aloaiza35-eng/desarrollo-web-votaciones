@@ -235,9 +235,9 @@ Para repetir la demostración completa, registrar otro usuario; no borrar votos.
 Código: `votaciones/api.py`. Ruta registrada en `config/urls.py`.
 Devuelve `{"categorias": [...]}` con id, nombre, descripción, estado, edición y
 opciones de cada categoría. Cada opción identifica su votación/subevento y estado.
-Incluye categorías cerradas indicando su estado; no expone cuentas ni votos.
+Incluye categorías cerradas indicando su estado; excluye registros archivados y no expone cuentas ni votos.
 
-- GET `/api/categorias/`: todas las categorías y opciones.
+- GET `/api/categorias/`: categorías y opciones activas.
 - GET `/api/categorias/?edicion=ID`: filtro opcional por identificador de edición.
 - Filtro inválido: HTTP 400. Métodos de escritura: HTTP 405.
 - Catálogo vacío: `{"categorias": []}`.
@@ -316,7 +316,7 @@ Procedimientos, resultados y correspondencia CP-01 a CP-10:
 
 - `config/`: configuración, rutas y configuraciones exclusivas de pruebas.
 - `cuentas/`: registro y autenticación.
-- `votaciones/`: modelos, servicio de voto, formularios, vistas, API, Admin y tests.
+- `votaciones/`: modelos, servicio de voto, formularios, vistas, API, gestión y tests.
 - `templates/` y `static/css/`: páginas y estilos.
 - `docs/pruebas_eje3.md`: pruebas y verificaciones del Eje 3.
 - Documentos `parte_1` y `validacion_eje2` en docs: históricos de la entrega anterior.
@@ -328,3 +328,37 @@ individualmente el mismo PDF. Mantener coherencia entre código, pruebas y video
 identificar el commit entregado. No publicar resultados oficiales, información
 personal ni credenciales. Reglas avanzadas de elegibilidad y despliegue productivo
 no se implementan en esta entrega.
+
+## Panel propio de gestión del festival
+
+El personal autorizado usa `/gestion/` desde el enlace **Administrar**. Permite
+crear y editar ediciones, categorías, subeventos y opciones; consultar votos;
+y consultar y descargar un informe CSV con cantidades por categoría.
+El CSV es un informe académico de participación, no una publicación oficial
+ni un informe de resultados electorales. No incluye nombres de usuarios.
+
+Para acceder se necesita una cuenta activa marcada como personal (`is_staff`).
+El superusuario ya creado dispone de acceso; una cuenta registrada públicamente
+no. Las modificaciones requieren POST con token CSRF. La página de votos es de
+solo lectura. El administrador técnico puede seguir usando `/admin/` para asignar
+permisos de personal, pero no es necesario usarlo para gestionar el catálogo.
+
+En las cuatro secciones, **Archivar** pide confirmación y oculta el elemento del
+catálogo público y la API conservando el registro y los votos. Archivar un padre
+oculta también sus descendientes; se pueden restaurar desde el panel. Si un padre
+continúa archivado, restaurar solo el hijo no lo hace visible. `Habilitada` es
+una decisión distinta: controla si una categoría o subevento acepta votos.
+Los votos conservan sus relaciones; no se pueden reasignar relaciones con votos.
+El archivo lógico básico no constituye una auditoría completa de cambios.
+
+La migración `0003` agrega el campo `activo` con valor inicial verdadero a los
+cuatro tipos del catálogo para conservar visibles los registros existentes.
+Después de actualizar a esta versión y antes de ejecutar el servidor:
+
+```bash
+python manage.py migrate
+```
+
+Comprobar las altas, ediciones, archivo y restauración, el CSV, el catálogo público
+ y los diez casos de voto en el entorno MySQL del equipo. Detalles y resultados
+separados por versión en `docs/pruebas_gestion.md` y `docs/pruebas_eje3.md`.

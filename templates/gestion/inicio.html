@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block title %}Administración del festival{% endblock %}
+{% block content %}
+<header class="page-heading"><p class="eyebrow">GESTIÓN DEL FESTIVAL</p><h1>Panel de administración</h1><p class="muted">Administra las ediciones y sus categorías, subeventos y opciones. Los cambios se reflejan en la aplicación.</p></header>
+<div class="grid">
+<article class="card"><h2>Ediciones</h2><p>Configura los festivales por año.</p><a class="button navy" href="{% url 'gestion:listado' 'ediciones' %}">Administrar ediciones →</a></article>
+<article class="card"><h2>Categorías</h2><p>Crea categorías y habilita o cierra sus votaciones.</p><a class="button navy" href="{% url 'gestion:listado' 'categorias' %}">Administrar categorías →</a></article>
+<article class="card"><h2>Subeventos</h2><p>Organiza las votaciones dentro de cada categoría.</p><a class="button navy" href="{% url 'gestion:listado' 'subeventos' %}">Administrar subeventos →</a></article>
+<article class="card"><h2>Opciones</h2><p>Configura los participantes o alternativas.</p><a class="button navy" href="{% url 'gestion:listado' 'opciones' %}">Administrar opciones →</a></article>
+<article class="card"><h2>Votos registrados</h2><p>Consulta los {{ total_votos }} votos registrados.</p><a class="button navy" href="{% url 'gestion:votos' %}">Consultar votos →</a></article>
+<article class="card"><h2>Informe de participación</h2><p>Revisa los totales por categoría y descarga un archivo CSV.</p><a class="button navy" href="{% url 'gestion:informe' %}">Ver informe →</a></article>
+</div>
+{% endblock %}

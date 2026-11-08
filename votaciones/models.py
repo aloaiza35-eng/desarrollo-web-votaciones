@@ -9,6 +9,7 @@ from django.db import models
 
 
 class Edicion(models.Model):
+    activo = models.BooleanField(default=True)
     nombre = models.CharField(max_length=150)
     anio = models.PositiveSmallIntegerField(unique=True)
 
@@ -22,6 +23,7 @@ class Edicion(models.Model):
 
 
 class Categoria(models.Model):
+    activo = models.BooleanField(default=True)
     edicion = models.ForeignKey(
         Edicion,
         on_delete=models.PROTECT,
@@ -54,6 +56,7 @@ class Categoria(models.Model):
 
 
 class Votacion(models.Model):
+    activo = models.BooleanField(default=True)
     categoria = models.ForeignKey(
         Categoria,
         on_delete=models.PROTECT,
@@ -80,6 +83,7 @@ class Votacion(models.Model):
 
 
 class Opcion(models.Model):
+    activo = models.BooleanField(default=True)
     votacion = models.ForeignKey(
         Votacion,
         on_delete=models.PROTECT,
@@ -143,6 +147,8 @@ class Voto(models.Model):
         if self.categoria_id and self.opcion_id:
             if self.opcion.votacion.categoria_id != self.categoria_id:
                 raise ValidationError({"opcion": "La opción no pertenece a esta categoría y edición."})
+            if not self.categoria.activo or not self.categoria.edicion.activo or not self.opcion.activo or not self.opcion.votacion.activo:
+                raise ValidationError("La categoría, edición o selección ya no está disponible.")
             if not self.categoria.habilitada:
                 raise ValidationError({"categoria": "Esta categoría está cerrada."})
             if not self.opcion.votacion.habilitada:

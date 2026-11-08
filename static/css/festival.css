@@ -10,3 +10,11 @@
 .vote-summary{display:grid;grid-template-columns:110px 1fr;gap:12px;margin:25px 0}
 .vote-summary dt{font-weight:650}.vote-summary dd{margin:0;overflow-wrap:anywhere}
 @media(max-width:480px){.vote-summary{grid-template-columns:1fr;gap:5px}.vote-summary dd{margin-bottom:12px}.actions .button{width:100%}}
+/* Formularios y tablas de administración. */
+.field select,.field textarea{display:block;width:100%;border:1px solid #a7b3c2;border-radius:8px;padding:12px;background:white;font:inherit;color:var(--ink)}
+.field input[type=checkbox]{display:inline-block;width:auto;min-height:auto;accent-color:var(--navy)}
+.check-label{display:flex!important;align-items:center;gap:10px}
+.table-scroll{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:#fff}
+.gestion-table{width:100%;border-collapse:collapse;min-width:680px;text-align:left}
+.gestion-table th,.gestion-table td{padding:14px;border-bottom:1px solid var(--line);vertical-align:top;overflow-wrap:anywhere}
+.gestion-table th{background:#eaf0f6;color:var(--navy)}

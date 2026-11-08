@@ -1,0 +1,3 @@
+{% extends "base.html" %}
+{% block title %}Confirmar archivo{% endblock %}
+{% block content %}<section class="card account"><p class="eyebrow">CONFIRMACIÓN</p><h1>Archivar {{ singular }}</h1><p>¿Deseas archivar <strong>{{ registro }}</strong>?</p><p>Se ocultará del catálogo público, junto con los registros que dependen de este. Los datos y votos anteriores se conservan. Podrás restaurarlo después.</p><form method="post">{% csrf_token %}<div class="actions"><button class="button navy" type="submit">Sí, archivar</button><a href="{% url 'gestion:listado' tipo %}">Cancelar</a></div></form></section>{% endblock %}

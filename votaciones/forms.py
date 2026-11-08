@@ -23,4 +23,5 @@ class SeleccionVotoForm(forms.Form):
         super().__init__(*args, **kwargs)
         self.fields["opcion"].queryset = Opcion.objects.filter(
             votacion__categoria=categoria, votacion__habilitada=True,
+            activo=True, votacion__activo=True,
         ).select_related("votacion").order_by("votacion__titulo", "nombre", "pk")

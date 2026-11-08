@@ -1,7 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import ValidationError
-from django.db.models import Count
+from django.db.models import Count, Prefetch, Q
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.decorators.http import require_http_methods
 
@@ -11,38 +11,41 @@ from .services import VotoDuplicado, registrar_voto
 
 
 def inicio(request):
-    ediciones = Edicion.objects.annotate(total_categorias=Count("categorias")).order_by("-anio")
+    ediciones = Edicion.objects.filter(activo=True).annotate(total_categorias=Count("categorias", filter=Q(categorias__activo=True))).order_by("-anio")
     return render(request, "votaciones/inicio.html", {
         "ediciones": ediciones[:3],
-        "total_ediciones": Edicion.objects.count(),
-        "total_categorias": Categoria.objects.count(),
-        "total_votaciones": Votacion.objects.count(),
-        "total_opciones": Opcion.objects.count(),
+        "total_ediciones": Edicion.objects.filter(activo=True).count(),
+        "total_categorias": Categoria.objects.filter(activo=True, edicion__activo=True).count(),
+        "total_votaciones": Votacion.objects.filter(activo=True, categoria__activo=True, categoria__edicion__activo=True).count(),
+        "total_opciones": Opcion.objects.filter(activo=True, votacion__activo=True, votacion__categoria__activo=True, votacion__categoria__edicion__activo=True).count(),
     })
 
 
 def ediciones(request):
     return render(request, "votaciones/ediciones.html", {
-        "ediciones": Edicion.objects.annotate(total_categorias=Count("categorias")).order_by("-anio"),
+        "ediciones": Edicion.objects.filter(activo=True).annotate(total_categorias=Count("categorias", filter=Q(categorias__activo=True))).order_by("-anio"),
     })
 
 
 def categorias(request, edicion_id):
-    edicion = get_object_or_404(Edicion, pk=edicion_id)
-    categorias = edicion.categorias.annotate(total_votaciones=Count("votaciones"))
+    edicion = get_object_or_404(Edicion, pk=edicion_id, activo=True)
+    categorias = edicion.categorias.filter(activo=True).annotate(total_votaciones=Count("votaciones", filter=Q(votaciones__activo=True)))
     return render(request, "votaciones/categorias.html", {"edicion": edicion, "categorias": categorias})
 
 
 def votaciones(request, categoria_id):
-    categoria = get_object_or_404(Categoria.objects.select_related("edicion"), pk=categoria_id)
-    votaciones = categoria.votaciones.annotate(total_opciones=Count("opciones"))
-    return render(request, "votaciones/votaciones.html", {"categoria": categoria, "votaciones": votaciones})
+    categoria = get_object_or_404(Categoria.objects.select_related("edicion"), pk=categoria_id, activo=True, edicion__activo=True)
+    votaciones = categoria.votaciones.filter(activo=True).annotate(total_opciones=Count("opciones", filter=Q(opciones__activo=True)))
+    ya_voto = request.user.is_authenticated and Voto.objects.filter(usuario=request.user, categoria=categoria).exists()
+    return render(request, "votaciones/votaciones.html", {"categoria": categoria, "votaciones": votaciones, "ya_voto": ya_voto})
 
 
 def detalle(request, votacion_id):
     votacion = get_object_or_404(
-        Votacion.objects.select_related("categoria__edicion").prefetch_related("opciones"),
-        pk=votacion_id,
+        Votacion.objects.select_related("categoria__edicion").prefetch_related(
+            Prefetch("opciones", queryset=Opcion.objects.filter(activo=True))
+        ),
+        pk=votacion_id, activo=True, categoria__activo=True, categoria__edicion__activo=True,
     )
     voto = None
     if request.user.is_authenticated:
@@ -55,7 +58,7 @@ def detalle(request, votacion_id):
 @login_required
 @require_http_methods(["GET", "POST"])
 def votar(request, categoria_id):
-    categoria = get_object_or_404(Categoria.objects.select_related("edicion"), pk=categoria_id)
+    categoria = get_object_or_404(Categoria.objects.select_related("edicion"), pk=categoria_id, activo=True, edicion__activo=True)
     contexto = {"categoria": categoria}
     if not categoria.habilitada:
         contexto["error"] = "Esta categoría está cerrada. No se permiten votos."

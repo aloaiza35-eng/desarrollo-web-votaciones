@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}{{ titulo }} · Administración{% endblock %}
+{% block content %}
+<nav class="breadcrumbs"><a href="{% url 'gestion:inicio' %}">Administración</a><span>/</span><span>{{ titulo }}</span></nav>
+<header class="page-heading"><p class="eyebrow">GESTIÓN DEL FESTIVAL</p><h1>{{ titulo }}</h1><p>Los registros archivados se conservan y pueden restaurarse.</p><a class="button navy" href="{% url 'gestion:crear' tipo %}">Agregar {{ singular }}</a></header>
+<div class="grid">
+{% for registro in registros %}
+<article class="card"><span class="tag">{% if registro.activo %}Activo{% else %}Archivado{% endif %}</span><h2>{{ registro }}</h2>
+{% if tipo == 'categorias' %}<p class="muted">Votación: {% if registro.habilitada %}habilitada{% else %}cerrada{% endif %}</p>{% endif %}
+{% if tipo == 'subeventos' %}<p class="muted">{{ registro.categoria }}<br>Subevento: {% if registro.habilitada %}habilitado{% else %}cerrado{% endif %}</p>{% endif %}
+{% if tipo == 'opciones' %}<p class="muted">{{ registro.votacion }} · {{ registro.votacion.categoria }}</p>{% endif %}
+<div class="actions"><a href="{% url 'gestion:editar' tipo registro.pk %}">Editar</a>
+{% if registro.activo %}<a href="{% url 'gestion:archivar' tipo registro.pk %}">Archivar</a>{% else %}<form method="post" action="{% url 'gestion:restaurar' tipo registro.pk %}">{% csrf_token %}<button class="button outline small" type="submit">Restaurar</button></form>{% endif %}</div></article>
+{% empty %}<div class="empty"><p>No hay registros. Puedes agregar el primero.</p></div>{% endfor %}
+</div>{% endblock %}

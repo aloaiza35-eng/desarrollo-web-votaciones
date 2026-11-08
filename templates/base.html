@@ -19,7 +19,7 @@
       {% if user.is_authenticated %}
         <a href="{% url 'cuenta' %}">Mi cuenta</a>
         <a href="{% url 'votaciones:participacion' %}">Mi participación</a>
-        {% if user.is_staff %}<a href="{% url 'admin:index' %}">Administrar</a>{% endif %}
+        {% if user.is_staff %}<a href="{% url 'gestion:inicio' %}">Administrar</a>{% endif %}
         <form method="post" action="{% url 'logout' %}" class="inline">{% csrf_token %}<button class="button outline-light small" type="submit">Cerrar sesión</button></form>
       {% else %}
         <a href="{% url 'login' %}">Ingresar</a><a class="button gold small" href="{% url 'registro' %}">Crear cuenta</a>
